@@ -117,3 +117,37 @@ export const rom = [
         value: '256GB'
     }
 ]
+
+export const sku = {
+    titles: ['手机版本', '手机网络', '手机颜色', '手机内存'],
+    options: [
+        ['32G', '64G', '128G', '32G/64G'],
+        ['公开版', '电信', '移动', '联通'],
+        ['香槟金', '月光银', '星空灰', '冰川蓝'],
+        ['32G', '64G', '128G']
+    ]
+}
+
+export const versions = {
+    label: '手机版本',
+    addLabel: '添加手机版本',
+    content: ['32G', '64G', '128G', '32G/64G']
+}
+
+export const network = {
+    label: '手机网络',
+    addLabel: '添加网络版本',
+    content: ['公开版', '电信', '移动', '联通']
+}
+
+export const color = {
+    label: '手机颜色',
+    addLabel: '添加手机颜色',
+    content: ['香槟金', '月光银', '星空灰', '冰川蓝']
+}
+
+export const phoneRam = {
+    label: '手机内存',
+    addLabel: '添加手机内存',
+    content: ['32G', '64G', '128G']
+}

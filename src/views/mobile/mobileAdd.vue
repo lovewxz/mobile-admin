@@ -1,6 +1,6 @@
 <template>
-    <el-form ref="form" :model="form" label-width="200px" @submit.prevent="onSubmit"
-             style="margin:20px;width:50%;min-width:500px;" class="form" :rules="rules">
+    <el-form ref="form" :model="form" label-width="100px" @submit.prevent="onSubmit"
+             style="margin:20px;width:80%;min-width:500px;" class="form" :rules="rules">
         <h2 class="title">销售属性</h2>
         <el-form-item label="手机名称" prop="name">
             <el-input v-model="form.name" placeholder="请填写手机名称"></el-input>
@@ -8,6 +8,7 @@
         <el-form-item label="活动详情" prop="detail">
             <el-input type="textarea" v-model="form.desc" placeholder="请填写一句话活动详情"></el-input>
         </el-form-item>
+        <sku :sku="sku"></sku>
         <h2 class="title">基础信息</h2>
         <el-form-item label="品牌">
             <el-select v-model="form.brand" placeholder="请选择品牌">
@@ -69,6 +70,8 @@
 
 <script type="text/ecmascript-6">
     import * as mobile from 'config/mobile'
+    import sku from 'components/sku'
+
     export default {
         data() {
             return {
@@ -79,6 +82,7 @@
                 make: mobile.make,
                 ram: mobile.ram,
                 rom: mobile.rom,
+                sku: mobile.sku,
                 form: {
                     name: '',
                     desc: '',
@@ -104,6 +108,13 @@
                     ]
                 }
             }
+        },
+        computed: {
+          tableData () {
+          }
+        },
+        components: {
+            sku
         }
     }
 </script>
