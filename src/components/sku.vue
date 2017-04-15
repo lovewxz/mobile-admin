@@ -229,6 +229,7 @@
                 this.editForm.skuId = row.skuId
                 this.editForm.stock = row.stock
                 this.editForm.price = row.price
+                this.editForm.picsList = row.picsList
                 this.editForm.index = index
             },
             //编辑
