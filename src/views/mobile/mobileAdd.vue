@@ -10,7 +10,7 @@
         </el-form-item>
         <el-form-item label="产品服务">
             <el-checkbox-group v-model="checkList">
-                <el-checkbox :label="item.title" v-for="item in mobileServices"></el-checkbox>
+                <el-checkbox :label="item.title" v-for="(item,index) in mobileServices"></el-checkbox>
             </el-checkbox-group>
         </el-form-item>
         <sku :sku="sku" @sendTableData="reTableData"></sku>
@@ -79,6 +79,7 @@
 <script type="text/ecmascript-6">
     import * as mobile from 'config/mobile'
     import sku from 'components/sku'
+    import _ from 'lodash'
 
     export default {
         data() {
@@ -127,17 +128,21 @@
         },
         computed: {
             services () {
-               this.checkList.forEach((item,i) => {
-                   this.mobileServices.forEach((service,j) => {
-                       if (item === service.title) {
-                           this.form.services.push(service.desc)
-                       }
-                   })
-               })
+                this.form.services = []
+                this.mobileServices.forEach((item, index) => {
+                    this.checkList.forEach((check) => {
+                        if (item.title === check) {
+                            this.form.services.push(this.mobileServices[index])
+                        }
+                    })
+                })
+                return this.form.services
             }
         },
         methods: {
             onSubmit () {
+                let para = Object.assign({}, this.form);
+                console.log(para)
             },
             reTableData (tableData) {
                 this.form.sku = tableData
@@ -148,7 +153,7 @@
         },
         watch: {
             'services' () {
-                console.log(this.services)
+                console.log(this.form.services)
             }
         }
     }
