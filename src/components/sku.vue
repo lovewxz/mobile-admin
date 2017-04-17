@@ -110,6 +110,11 @@
                 }
             }
         },
+        watch: {
+           'tableData' ()  {
+               this.$emit('sendTableData',this.tableData)
+           }
+        },
         data () {
             return {
                 titles: this.sku.titles,
@@ -264,7 +269,10 @@
             },
             handleRemove(i) {
                 this.tableData[this.editForm.index].picsList.splice(i, 1)
-            }
+            },
+        },
+        mounted () {
+            this.$emit('sendTableData',this.tableData)
         }
     }
 </script>

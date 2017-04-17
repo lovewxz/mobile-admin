@@ -8,14 +8,19 @@
         <el-form-item label="活动详情" prop="detail">
             <el-input type="textarea" v-model="form.desc" placeholder="请填写一句话活动详情"></el-input>
         </el-form-item>
-        <sku :sku="sku"></sku>
+        <el-form-item label="产品服务">
+            <el-checkbox-group v-model="checkList">
+                <el-checkbox :label="item.title" v-for="item in mobileServices"></el-checkbox>
+            </el-checkbox-group>
+        </el-form-item>
+        <sku :sku="sku" @sendTableData="reTableData"></sku>
         <h2 class="title">基础信息</h2>
         <el-form-item label="品牌">
             <el-select v-model="form.brand" placeholder="请选择品牌">
                 <el-option :label="item.label" :value="item.value" v-for="item in brand"></el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="手机型号">
+        <el-form-item label="手机型号" prop="model">
             <el-input v-model="form.model" placeholder="请填写手机型号"></el-input>
         </el-form-item>
         <el-form-item label="手机尺寸">
@@ -65,6 +70,9 @@
                 <el-option :label="item.label" :value="item.value" v-for="item in rom"></el-option>
             </el-select>
         </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        </el-form-item>
     </el-form>
 </template>
 
@@ -75,6 +83,8 @@
     export default {
         data() {
             return {
+                //产品服务
+                mobileServices: mobile.mobileServices,
                 brand: mobile.brand,
                 fSize: mobile.fSize,
                 dpi: mobile.dpi,
@@ -83,6 +93,7 @@
                 ram: mobile.ram,
                 rom: mobile.rom,
                 sku: mobile.sku,
+                checkList: [],
                 form: {
                     name: '',
                     desc: '',
@@ -96,25 +107,49 @@
                     display: 'Super AMOLED',
                     make: 'On-cell',
                     ram: '',
-                    rom: ''
+                    rom: '',
+                    sku: [],
+                    services: []
                 },
                 rules: {
                     name: [
-                        { required: true, message: '请输入手机名称', trigger: 'blur' },
-                        { max: 50, message: '长度在25个字符以内', trigger: 'blur' }
+                        {required: true, message: '请输入手机名称', trigger: 'blur'},
+                        {max: 50, message: '长度在25个字符以内', trigger: 'blur'}
                     ],
                     detail: [
-                        { max: 100, message: '长度在50个字符以内', trigger: 'blur' }
+                        {max: 100, message: '长度在50个字符以内', trigger: 'blur'}
+                    ],
+                    model: [
+                        {required: true, message: '请输入手机型号', trigger: 'blur'},
                     ]
                 }
             }
         },
         computed: {
-          tableData () {
-          }
+            services () {
+               this.checkList.forEach((item,i) => {
+                   this.mobileServices.forEach((service,j) => {
+                       if (item === service.title) {
+                           this.form.services.push(service.desc)
+                       }
+                   })
+               })
+            }
+        },
+        methods: {
+            onSubmit () {
+            },
+            reTableData (tableData) {
+                this.form.sku = tableData
+            }
         },
         components: {
             sku
+        },
+        watch: {
+            'services' () {
+                console.log(this.services)
+            }
         }
     }
 </script>

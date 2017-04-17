@@ -128,26 +128,21 @@ export const sku = {
     ]
 }
 
-export const versions = {
-    label: '手机版本',
-    addLabel: '添加手机版本',
-    content: ['32G', '64G', '128G', '32G/64G']
-}
-
-export const network = {
-    label: '手机网络',
-    addLabel: '添加网络版本',
-    content: ['公开版', '电信', '移动', '联通']
-}
-
-export const color = {
-    label: '手机颜色',
-    addLabel: '添加手机颜色',
-    content: ['香槟金', '月光银', '星空灰', '冰川蓝']
-}
-
-export const phoneRam = {
-    label: '手机内存',
-    addLabel: '添加手机内存',
-    content: ['32G', '64G', '128G']
-}
+export const mobileServices = [
+    {
+        title: '花呗分期',
+        desc: '花呗分期是由蚂蚁花呗联合魅族商城共同推出的“先购物后付款”的支付体验，支持预支蚂蚁花呗额度，免息期最长可达41天，可选择分3、6、12期还款。'
+    },
+    {
+        title: '百城速达',
+        desc: '全国105个城市，除特殊情况，当日17点前支付的订单，最迟次日送达。'
+    },
+    {
+        title: '顺丰包邮',
+        desc: '该商品顺丰包邮，顺丰无法到达的地区会安排转寄其他快递。'
+    },
+    {
+        title: '7天无理由退货',
+        desc: '自您的订单签收之日7个自然日之内（含），在商品完好的情况下，可进行无理由退货。 '
+    }
+]
