@@ -15,7 +15,12 @@
         </el-form-item>
         <el-table
                 :data="tableData"
+                @selection-change="selsChange"
         >
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
             <el-table-column
                     prop="skuId"
                     label="skuId"
@@ -23,31 +28,34 @@
             >
             </el-table-column>
             <el-table-column
-                    v-for="title in titles"
+                    v-for="(title,index) in titles"
                     :label="title"
                     :prop="title"
-                    width="100"
+                    width="120"
+                    :filters="filters(index)"
+                    :filter-method="filterOption"
             >
             </el-table-column>
             <el-table-column
                     label="库存"
                     prop="stock"
-                    width="80"
+                    width="70"
             >
             </el-table-column>
             <el-table-column
                     label="价格"
                     prop="price"
-                    width="80"
+                    width="70"
             >
             </el-table-column>
             <el-table-column
                     label="图片"
                     prop="picsList"
-                    width="150"
+                    width="70"
             >
                 <template scope="scope">
-                    <img :src="item" alt="" v-for="item in scope.row.picsList" v-if="scope.row.picsList" width="50" height="50" style="margin-right:5px;vertical-align: middle;padding: 5px 0">
+                    <img :src="item" alt="" v-for="item in scope.row.picsList" v-if="scope.row.picsList" width="50"
+                         height="50" style="margin-right:5px;vertical-align: middle;padding: 5px 0">
                 </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -64,7 +72,7 @@
                 </template>
             </el-table-column>
         </el-table>
-
+        <el-button type="primary" @click.native="batchEdit" style="margin-top:20px">批量修改</el-button>
         <!--编辑界面-->
         <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
             <el-form label-width="70px" :rules="editFormRules" ref="editForm" :model="editForm">
@@ -111,12 +119,13 @@
             }
         },
         watch: {
-           'tableData' ()  {
-               this.$emit('sendTableData',this.tableData)
-           }
+            'tableData' ()  {
+                this.$emit('sendTableData', this.tableData)
+            }
         },
         data () {
             return {
+                sels: [], //列表选中列
                 titles: this.sku.titles,
                 options: this.sku.options,
                 inputVisible: false,
@@ -270,9 +279,32 @@
             handleRemove(i) {
                 this.tableData[this.editForm.index].picsList.splice(i, 1)
             },
+            filters (index) {
+                let res = []
+                this.options[index].forEach((item) => {
+                    res.push({
+                        text: item,
+                        value: item
+                    })
+                })
+                return res
+            },
+            filterOption (value, row) {
+                for (let i in row ) {
+                    if(row[i] === value) {
+                        return row
+                    }
+                }
+            },
+            selsChange (sels) {
+                this.sels = sels;
+            },
+            batchEdit () {
+
+            }
         },
         mounted () {
-            this.$emit('sendTableData',this.tableData)
+            this.$emit('sendTableData', this.tableData)
         }
     }
 </script>
