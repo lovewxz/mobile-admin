@@ -54,7 +54,7 @@
                     width="70"
             >
                 <template scope="scope">
-                    <img :src="item" alt="" v-for="item in scope.row.picsList" v-if="scope.row.picsList" width="50"
+                    <img :src="scope.row.picsList[0]" alt="" v-if="scope.row.picsList.length" width="50"
                          height="50" style="margin-right:5px;vertical-align: middle;padding: 5px 0">
                 </template>
             </el-table-column>
@@ -72,16 +72,17 @@
                 </template>
             </el-table-column>
         </el-table>
-        <el-button type="primary" @click.native="batchEdit" style="margin-top:20px">批量修改</el-button>
+        <el-button type="primary" @click.native="batchEdit" style="margin-top:20px" :disabled="btnStatus">批量修改
+        </el-button>
         <!--编辑界面-->
         <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
             <el-form label-width="70px" :rules="editFormRules" ref="editForm" :model="editForm">
                 <el-form-item label="skuId">{{editForm.skuId}}</el-form-item>
                 <el-form-item label="库存" prop="stock">
-                    <el-input v-model="editForm.stock" style="width: 120px"></el-input>
+                    <el-input v-model.number="editForm.stock" style="width: 120px"></el-input>
                 </el-form-item>
                 <el-form-item label="价格" prop="price">
-                    <el-input v-model="editForm.price" style="width: 120px"></el-input>
+                    <el-input v-model.number="editForm.price" style="width: 120px"></el-input>
                 </el-form-item>
                 <el-form-item label="图片" prop="picsList">
                     <img :src="item" v-for="(item,i) in tableData[editForm.index].picsList"
@@ -100,6 +101,31 @@
             <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
                 <el-button type="primary" @click.native="editSubmit">提交</el-button>
+            </div>
+        </el-dialog>
+        <!--批量编辑页面-->
+        <el-dialog title="编辑" v-model="batchEditFormVisible" :close-on-click-modal="false">
+            <el-form label-width="70px" :rules="editFormRules" ref="editForm" :model="editForm">
+                <el-form-item label="库存" prop="stock">
+                    <el-input v-model.number="editForm.stock" style="width: 120px"></el-input>
+                </el-form-item>
+                <el-form-item label="价格" prop="price">
+                    <el-input v-model.number="editForm.price" style="width: 120px"></el-input>
+                </el-form-item>
+                <el-form-item label="图片" prop="picsList">
+                    <el-upload
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            list-type="picture-card"
+                            :on-success="handleSuccess"
+                            :multiple="true"
+                    >
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="batchEditSubmit">提交</el-button>
             </div>
         </el-dialog>
     </div>
@@ -125,12 +151,12 @@
         },
         data () {
             return {
+                btnStatus: true, //批量删除按钮
                 sels: [], //列表选中列
                 titles: this.sku.titles,
                 options: this.sku.options,
-                inputVisible: false,
-                inputValue: '',
                 editFormVisible: false,
+                batchEditFormVisible: false,
                 editForm: {
                     skuID: '',
                     stock: '',
@@ -140,10 +166,12 @@
                 },
                 editFormRules: {
                     stock: [
-                        {required: true, message: '库存不能为空', trigger: 'blur'}
+                        {required: true, message: '库存不能为空'},
+                        {type: 'number', message: '库存必须为数字值'}
                     ],
                     price: [
-                        {required: true, message: '价格不能为空', trigger: 'blur'}
+                        {required: true, message: '价格不能为空'},
+                        {type: 'number', message: '价格必须为数字值'}
                     ]
                 },
             }
@@ -193,8 +221,8 @@
                     let path = this.paths[i]
                     let arr = {
                         skuId: path.symbols.join(SKU_SEP),
-                        stock: '999',
-                        price: '1000',
+                        stock: 999,
+                        price: 1000,
                         picsList: []
                     }
                     this.titles.forEach((item, index) => {
@@ -290,17 +318,35 @@
                 return res
             },
             filterOption (value, row) {
-                for (let i in row ) {
-                    if(row[i] === value) {
+                for (let i in row) {
+                    if (row[i] === value) {
                         return row
                     }
                 }
             },
             selsChange (sels) {
-                this.sels = sels;
+                this.sels = sels
+                this.sels.length > 1 ? this.btnStatus = false : this.btnStatus = true
             },
             batchEdit () {
-
+                this.batchEditFormVisible = true
+            },
+            batchEditSubmit () {
+                this.sels.map((item) => {
+                    this.tableData.map((table) => {
+                        if (item['skuId'] === table['skuId']) {
+                            if (this.editForm.price) {
+                                table['price'] = this.editForm.price
+                            }
+                            if (this.editForm.stock) {
+                                table['stock'] = this.editForm.stock
+                            }
+                            if (this.editForm.picsList.length) {
+                                table['picsList'] = this.editForm.picsList
+                            }
+                        }
+                    })
+                })
             }
         },
         mounted () {
