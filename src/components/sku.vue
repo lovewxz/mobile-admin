@@ -84,9 +84,9 @@
                 <el-form-item label="价格" prop="price">
                     <el-input v-model.number="editForm.price" style="width: 120px"></el-input>
                 </el-form-item>
-                <el-form-item label="图片" prop="picsList">
+                <el-form-item label="图片" prop="picsList" v-if="tableData[editForm.index]&&tableData[editForm.index].picsList&&tableData[editForm.index].picsList.length > 0">
                     <img :src="item" v-for="(item,i) in tableData[editForm.index].picsList"
-                         v-if="tableData[editForm.index].picsList" width="148" height="148" @click="handleRemove(i)"
+                          width="148" height="148" @click="handleRemove(i)"
                          style="margin-right:10px">
                     <el-upload
                             action="https://jsonplaceholder.typicode.com/posts/"
@@ -105,7 +105,7 @@
         </el-dialog>
         <!--批量编辑页面-->
         <el-dialog title="编辑" v-model="batchEditFormVisible" :close-on-click-modal="false">
-            <el-form label-width="70px" :rules="editFormRules" ref="editForm" :model="editForm">
+            <el-form label-width="70px" :rules="editFormRules" ref="batchEditForm" :model="editForm">
                 <el-form-item label="库存" prop="stock">
                     <el-input v-model.number="editForm.stock" style="width: 120px"></el-input>
                 </el-form-item>
@@ -124,7 +124,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button @click.native="batchEditFormVisible = false">取消</el-button>
                 <el-button type="primary" @click.native="batchEditSubmit">提交</el-button>
             </div>
         </el-dialog>
@@ -159,8 +159,8 @@
                 batchEditFormVisible: false,
                 editForm: {
                     skuID: '',
-                    stock: '',
-                    price: '',
+                    stock: 0,
+                    price: 0,
                     picsList: [],
                     index: 0
                 },
@@ -230,6 +230,7 @@
                     })
                     res.push(arr)
                 }
+                console.log(res)
                 return res
             }
         },
@@ -266,7 +267,6 @@
                 });
             },
             handleEdit(index, row) {
-                console.log(row.stock)
                 this.editFormVisible = true
                 this.editForm.skuId = row.skuId
                 this.editForm.stock = row.stock
@@ -330,22 +330,48 @@
             },
             batchEdit () {
                 this.batchEditFormVisible = true
+                this.editForm.price = 0
+                this.editForm.stock = 0
+                this.$nextTick(() => {
+                    this.$refs['batchEditForm'].resetFields()
+                })
             },
             batchEditSubmit () {
-                this.sels.map((item) => {
-                    this.tableData.map((table) => {
-                        if (item['skuId'] === table['skuId']) {
-                            if (this.editForm.price) {
-                                table['price'] = this.editForm.price
-                            }
-                            if (this.editForm.stock) {
-                                table['stock'] = this.editForm.stock
-                            }
-                            if (this.editForm.picsList.length) {
-                                table['picsList'] = this.editForm.picsList
-                            }
-                        }
-                    })
+                this.$refs.batchEditForm.validate((valid) => {
+                    if (valid) {
+                        this.$confirm('确认提交吗？', '提示', {
+                            type: 'warning'
+                        }).then(() => {
+                            this.sels.map((item) => {
+                                this.tableData.map((table) => {
+                                    if (item['skuId'] === table['skuId']) {
+                                        if (this.editForm.price) {
+                                            table['price'] = this.editForm.price
+                                        }
+                                        if (this.editForm.stock) {
+                                            table['stock'] = this.editForm.stock
+                                        }
+                                        if (this.editForm.picsList.length) {
+                                            table['picsList'] = this.editForm.picsList
+                                        }
+                                    }
+                                })
+                            })
+                            this.$message({
+                                message: '提交成功',
+                                type: 'success'
+                            })
+                            this.batchEditFormVisible = false
+                            this.$nextTick(() => {
+                                this.$refs['batchEditForm'].resetFields()
+                            })
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '取消输入'
+                            })
+                        })
+                    }
                 })
             }
         },
