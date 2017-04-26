@@ -13,7 +13,12 @@
                 <el-checkbox :label="item.title" v-for="(item,index) in mobileServices"></el-checkbox>
             </el-checkbox-group>
         </el-form-item>
-        <sku :sku="sku" @sendTableData="reTableData"></sku>
+        <sku :sku="sku" :session-id="getSessionId" @sendTableData="reTableData"></sku>
+        <h2 class="title">图片详情</h2>
+        <quill-editor v-model="form.picsContent"
+                      ref="myQuillEditor"
+        >
+        </quill-editor>
         <h2 class="title">基础信息</h2>
         <el-form-item label="品牌">
             <el-select v-model="form.brand" placeholder="请选择品牌">
@@ -80,6 +85,8 @@
     import * as mobile from 'config/mobile'
     import sku from 'components/sku'
     import _ from 'lodash'
+    import { quillEditor } from 'vue-quill-editor'
+    import { mapGetters } from 'vuex'
 
     export default {
         data() {
@@ -110,7 +117,8 @@
                     ram: '',
                     rom: '',
                     sku: [],
-                    services: []
+                    services: [],
+                    picsContent: ''
                 },
                 rules: {
                     name: [
@@ -137,7 +145,10 @@
                     })
                 })
                 return this.form.services
-            }
+            },
+            ...mapGetters([
+                'getSessionId'
+            ])
         },
         methods: {
             onSubmit () {
@@ -149,7 +160,8 @@
             }
         },
         components: {
-            sku
+            sku,
+            quillEditor
         },
         watch: {
             'services' () {

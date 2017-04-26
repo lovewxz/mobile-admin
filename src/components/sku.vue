@@ -89,8 +89,9 @@
                           width="148" height="148" @click="handleRemove(i)"
                          style="margin-right:10px">
                     <el-upload
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="http://120.26.106.144:8888/home/uploadimg"
                             list-type="picture-card"
+                            :headers="sessionId"
                             :on-success="handleSuccess"
                             :multiple="true"
                     >
@@ -114,10 +115,12 @@
                 </el-form-item>
                 <el-form-item label="图片" prop="picsList">
                     <el-upload
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="http://120.26.106.144:8888/home/uploadimg"
                             list-type="picture-card"
+                            :headers="{'sessionId':sessionId}"
                             :on-success="handleSuccess"
                             :multiple="true"
+                            :before-upload="beforeUpload"
                     >
                         <i class="el-icon-plus"></i>
                     </el-upload>
@@ -142,6 +145,10 @@
                 default () {
                     return {}
                 }
+            },
+            sessionId: {
+                type: String,
+                default: ''
             }
         },
         watch: {
@@ -230,7 +237,6 @@
                     })
                     res.push(arr)
                 }
-                console.log(res)
                 return res
             }
         },
@@ -301,7 +307,11 @@
                     }
                 })
             },
+            beforeUpload (file) {
+                console.log(file)
+            },
             handleSuccess(response, file, fileList) {
+                console.log(response)
                 this.editForm.picsList.push(file.url)
             },
             handleRemove(i) {
@@ -377,6 +387,7 @@
         },
         mounted () {
             this.$emit('sendTableData', this.tableData)
+            console.log(this.sessionId)
         }
     }
 </script>
