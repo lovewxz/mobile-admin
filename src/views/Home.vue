@@ -72,6 +72,7 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex'
 	export default {
 		data() {
 			return {
@@ -90,6 +91,11 @@
 					desc: ''
 				}
 			}
+		},
+		computed: {
+			...mapGetters([
+				'getUser'
+			])
 		},
 		methods: {
 			onSubmit() {
@@ -113,9 +119,7 @@
 					_this.$router.push('/login')
 				}).catch(() => {
 
-				});
-
-
+				})
 			},
 			//折叠导航栏
 			collapse:function(){
@@ -126,11 +130,10 @@
 			}
 		},
 		mounted() {
-			var user = sessionStorage.getItem('user')
-			if (user) {
-				user = JSON.parse(user);
-				this.sysUserName = user.DspName || ''
-				this.sysUserAvatar = user.ImgUrl || ''
+			this.$store.dispatch('getUserAction')
+			if (this.getUser) {
+				this.sysUserName = this.getUser.DspName || ''
+				this.sysUserAvatar = this.getUser.ImgUrl || ''
 			}
 		}
 	}

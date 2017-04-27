@@ -55,13 +55,13 @@
                             console.log(data)
                             this.logining = false
                             let user = data.data, code = data.code, msg = data.msg
-                           if (code !== 200) {
-                               this.$message({
+                            if (code !== 200) {
+                                this.$message({
                                     message: msg,
                                     type: 'error'
                                 })
                             } else {
-                                sessionStorage.setItem('user', JSON.stringify(user))
+                                this.$store.commit('SAVEUSER', user)
                                 this.$router.push({path: '/mobileAdd'})
                             }
                         })

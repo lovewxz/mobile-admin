@@ -1,7 +1,11 @@
-//test
-export const increment = ({commit}) => {
-    commit('INCREMENT')
+export const saveUserAction = ({commit}) => {
+    commit('SAVEUSER')
 }
-export const decrement = ({commit}) => {
-    commit('DECREMENT')
+
+export const getUserAction = ({commit}) => {
+    commit('GETUSER')
+}
+
+export const removeUserAction = ({commit}) => {
+    commit('REMOVEUSER')
 }

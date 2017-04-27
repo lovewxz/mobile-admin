@@ -13,7 +13,7 @@
                 <el-checkbox :label="item.title" v-for="(item,index) in mobileServices"></el-checkbox>
             </el-checkbox-group>
         </el-form-item>
-        <sku :sku="sku" :session-id="getSessionId" @sendTableData="reTableData"></sku>
+        <sku :sku="sku" :session-id="getUser.SessionId" @sendTableData="reTableData"></sku>
         <h2 class="title">图片详情</h2>
         <quill-editor v-model="form.picsContent"
                       ref="myQuillEditor"
@@ -147,7 +147,7 @@
                 return this.form.services
             },
             ...mapGetters([
-                'getSessionId'
+                'getUser'
             ])
         },
         methods: {

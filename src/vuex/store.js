@@ -5,29 +5,28 @@ import * as getters from './getters'
 
 Vue.use(Vuex)
 
-let sessionId = ''
-let user = sessionStorage.getItem('user')
-
-if (user) {
-    user = JSON.parse(user);
-    sessionId = user.SessionId
-}
 
 // 应用初始状态
 const state = {
     count: 10,
-    sessionId: sessionId
+    user: ''
 }
-
-
 
 // 定义所需的 mutations
 const mutations = {
-    INCREMENT(state) {
-        state.count++
+    SAVEUSER(state, user) {
+        state.user = user
+        sessionStorage.setItem('user', JSON.stringify(state.user))
     },
-    DECREMENT(state) {
-        state.count--
+    GETUSER(state) {
+        var user = sessionStorage.getItem('user')
+        if (user) {
+            user = JSON.parse(user)
+            state.user = user
+        }
+    },
+    REMOVEUSER(state) {
+        sessionStorage.removeItem('user');
     }
 }
 
