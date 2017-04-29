@@ -12,14 +12,12 @@
         <el-form-item style="width:100%;">
             <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录
             </el-button>
-            <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
         </el-form-item>
     </el-form>
 </template>
 
 <script>
     import {requestLogin} from '../api/api';
-    //import NProgress from 'nprogress'
     export default {
         data() {
             return {
@@ -42,9 +40,6 @@
             };
         },
         methods: {
-            handleReset2() {
-                this.$refs.ruleForm2.resetFields()
-            },
             handleSubmit2(ev) {
                 var _this = this
                 this.$refs.ruleForm2.validate((valid) => {

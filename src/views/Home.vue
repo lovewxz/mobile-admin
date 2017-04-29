@@ -130,7 +130,6 @@
 			}
 		},
 		mounted() {
-			this.$store.dispatch('getUserAction')
 			if (this.getUser) {
 				this.sysUserName = this.getUser.DspName || ''
 				this.sysUserAvatar = this.getUser.ImgUrl || ''

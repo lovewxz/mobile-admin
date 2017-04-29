@@ -9,7 +9,7 @@ Vue.use(Vuex)
 // 应用初始状态
 const state = {
     count: 10,
-    user: ''
+    user: JSON.parse(sessionStorage.getItem('user')) || ''
 }
 
 // 定义所需的 mutations
@@ -18,15 +18,9 @@ const mutations = {
         state.user = user
         sessionStorage.setItem('user', JSON.stringify(state.user))
     },
-    GETUSER(state) {
-        var user = sessionStorage.getItem('user')
-        if (user) {
-            user = JSON.parse(user)
-            state.user = user
-        }
-    },
     REMOVEUSER(state) {
         sessionStorage.removeItem('user');
+        state.user = ''
     }
 }
 

@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
     router.app.$store.dispatch('removeUserAction')
   }
   let user = router.app.$store.getters.getUser
-  if (!user && to.path != '/login') {
+  if (!user && to.path !== '/login') {
     next({ path: '/login' })
   } else {
     next()

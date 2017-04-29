@@ -84,9 +84,10 @@
                 <el-form-item label="价格" prop="price">
                     <el-input v-model.number="editForm.price" style="width: 120px"></el-input>
                 </el-form-item>
-                <el-form-item label="图片" prop="picsList" v-if="tableData[editForm.index]&&tableData[editForm.index].picsList&&tableData[editForm.index].picsList.length > 0">
+                <el-form-item label="图片" prop="picsList"
+                              v-if="tableData[editForm.index]&&tableData[editForm.index].picsList&&tableData[editForm.index].picsList.length > 0">
                     <img :src="item" v-for="(item,i) in tableData[editForm.index].picsList"
-                          width="148" height="148" @click="handleRemove(i)"
+                         width="148" height="148" @click="handleRemove(i)"
                          style="margin-right:10px">
                     <el-upload
                             action="http://120.26.106.144:8888/home/uploadimg"
@@ -94,6 +95,7 @@
                             :headers="sessionId"
                             :on-success="handleSuccess"
                             :multiple="true"
+                            :before-upload="beforeUpload"
                     >
                         <i class="el-icon-plus"></i>
                     </el-upload>
@@ -308,11 +310,27 @@
                 })
             },
             beforeUpload (file) {
-                console.log(file)
+                const fileType = ['image/jpeg', 'image/gif', 'image/png']
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                let flag = false
+
+                fileType.forEach((item) => {
+                    if (file.type === item) {
+                        flag = true
+                    }
+                })
+                if (!flag) {
+                    this.$message.error('上传头像图片只能是 JPG,GIF,PNG 格式!')
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return flag && isLt2M
             },
             handleSuccess(response, file, fileList) {
-                console.log(response)
-                this.editForm.picsList.push(file.url)
+                if (response.code === 200) {
+                    this.editForm.picsList.push(response.data.url)
+                }
             },
             handleRemove(i) {
                 this.tableData[this.editForm.index].picsList.splice(i, 1)
@@ -387,7 +405,6 @@
         },
         mounted () {
             this.$emit('sendTableData', this.tableData)
-            console.log(this.sessionId)
         }
     }
 </script>
